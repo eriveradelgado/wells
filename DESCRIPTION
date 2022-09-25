@@ -1,0 +1,11 @@
+Package: wells
+Title: A Set of Functions to Describe Common Operations on Multiwell Plates.
+Version: 0.0.0.9000
+Authors@R: 
+    person("Edgardo", "Rivera-Delgado", , "edgardrivera@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-2679-6436"))
+Description: Establishes common operations to describe multi well assay plates.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
