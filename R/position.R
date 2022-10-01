@@ -156,20 +156,26 @@ well_to_position <- function(well, direction, plate_size){
 
 }
 
-example_range <- c("A1:B2", "A1:C2")
+example_range <- c("A1:B2", "B3:C5")
 # Should return vector of the kind A1, A2, B1, B2
 
-sequence_to_wells <- function(range){
-
+sequence_to_wells <- function(range, direction = NULL, plate_size = NULL){
+if(is.null(direction)){
+  direction <- "left_right"
+}
+  if(is.null(plate_size)){
+    plate_size = 96
+  }
   well_start_end <- strsplit(example_range, split = ":")
 
-  position_start_end <- purrr::map(start_end, ~well_to_position(.x, direction = "left_right", plate_size = 96))
+  position_start_end <- purrr::map(well_start_end, ~well_to_position(.x, direction = direction, plate_size = plate_size))
 
-  purrr::map(position_start_end, ~seq(.x[[1]], .x[[2]]))
+  position_sequence <- unlist(purrr::map(position_start_end, ~seq(.x[[1]], .x[[2]])))
 
+  position_to_well(position_sequence, direction = direction, plate_size = 96)
 }
 
-range_to_well(example_range)
+sequence_to_wells(example_range)
 
 
 
