@@ -207,7 +207,7 @@ range_to_wells <- function(range, direction = NULL, plate_size = NULL){
  )
  rows <- purrr::map(rows_start_end,
                     ~LETTERS[which( LETTERS %in% .x[[1]]):which(LETTERS %in% .x[[2]])])
-rows
+
 
 columns <- purrr::map(columns_start_end,
                       ~.x[[1]]:.x[[2]])
@@ -216,7 +216,7 @@ list_row_column <- purrr::map2(rows, columns, ~expand.grid( row = .x, column = .
   purrr::map(~.x %>% arrange(row))
 
 if(direction == "top_bottom"){
-list_row_column <- purrr::map2(rows, columns, ~expand.grid( row = .x, column = .y)) %>%
+list_row_column <- list_row_column %>%
   purrr::map(~.x %>% arrange(column))
 }
 
@@ -227,16 +227,6 @@ list_row_column%>%
 
 }
 
-
-
-col_start_end <- c(1, 2)
-row_start_end <- c("A", "B")
-
-expand.grid(col_start_end, row_start_end)
-
-for(i in 1:length(col_start_end)){
-
-}
 
 
 
