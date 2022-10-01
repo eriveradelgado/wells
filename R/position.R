@@ -36,6 +36,8 @@ row_size <- function(plate_size){
          "384" = 16)
 }
 
+
+
 #' Title
 #'
 #' @param position
@@ -155,16 +157,23 @@ well_to_position <- function(well, direction, plate_size){
 
 
 }
+wellrange_to_positionrange <- function(range, direction, plate_size){
+  well_start_end <- strsplit(range, split = ":")
+
+  position_start_end <- purrr::map(well_start_end, ~well_to_position(.x, direction, plate_size))
+  position_start_end
+}
 
 example_range <- c("A1:B2", "B3:C5")
-# Should return vector of the kind A1, A2, B1, B2
+# Should return vector of the kind A1, A2, A3,...B1, B2 ... C4, C5
 
 sequence_to_wells <- function(range, direction = NULL, plate_size = NULL){
-if(is.null(direction)){
+
+  if(is.null(direction)){
   direction <- "left_right"
-}
+  }
   if(is.null(plate_size)){
-    plate_size = 96
+    plate_size <-  96
   }
   well_start_end <- strsplit(example_range, split = ":")
 
@@ -172,12 +181,62 @@ if(is.null(direction)){
 
   position_sequence <- unlist(purrr::map(position_start_end, ~seq(.x[[1]], .x[[2]])))
 
-  position_to_well(position_sequence, direction = direction, plate_size = 96)
+  position_to_well(position_sequence, direction = direction, plate_size = plate_size)
 }
 
-sequence_to_wells(example_range)
+# Should return vector of the kind A1, A2,
+#                                  B1, B2
+
+range_to_wells <- function(range, direction = NULL, plate_size = NULL){
+  if(is.null(direction)){
+    direction <- "left_right"
+  }
+  if(is.null(plate_size)){
+    plate_size <-  96
+  }
+ position_start_end <- wellrange_to_positionrange(range, direction, plate_size)
+
+ columns_start_end <- purrr::map(
+   position_start_end,
+   ~position_to_column(.x, direction = direction, plate_size = plate_size)
+   )
+
+ rows_start_end <- purrr::map(
+   position_start_end,
+   ~position_to_row(.x, direction = direction, plate_size = plate_size)
+ )
+ rows <- purrr::map(rows_start_end,
+                    ~LETTERS[which( LETTERS %in% .x[[1]]):which(LETTERS %in% .x[[2]])])
+rows
+
+columns <- purrr::map(columns_start_end,
+                      ~.x[[1]]:.x[[2]])
+
+list_row_column <- purrr::map2(rows, columns, ~expand.grid( row = .x, column = .y)) %>%
+  purrr::map(~.x %>% arrange(row))
+
+if(direction == "top_bottom"){
+list_row_column <- purrr::map2(rows, columns, ~expand.grid( row = .x, column = .y)) %>%
+  purrr::map(~.x %>% arrange(column))
+}
+
+list_row_column%>%
+  purrr::map(~.x %>% tidyr::unite(col = "well", row, column, remove = TRUE, sep = "")) %>%
+  unlist() %>%
+  as.vector()
+
+}
 
 
+
+col_start_end <- c(1, 2)
+row_start_end <- c("A", "B")
+
+expand.grid(col_start_end, row_start_end)
+
+for(i in 1:length(col_start_end)){
+
+}
 
 
 
