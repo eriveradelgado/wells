@@ -230,6 +230,38 @@ list_row_column %>%
 
 }
 
+example_column <- 1
+column_to_wells <- function(column, direction = NULL, plate_size = NULL){
+
+
+
+
+}
+
+wells <- function(initial_row, final_row, initial_column, final_column, direction = NULL){
+  if(is.null(direction)){
+    direction <- "left_right"
+  }
+
+  # This function needs some constraints e.g. 13 column inputs or initial column
+  # greater than finalcolumn. Besides most people don't write rows in number format
+ initial_row  <- which(LETTERS %in% initial_row)
+ final_row <- which(LETTERS %in% final_row)
+
+  wells <- paste0(
+    rep(LETTERS[initial_row:final_row], each = final_column-initial_column+1),
+
+    rep(initial_column:final_column, times = final_row-initial_row+1)
+                  )
+  if(direction == "top_bottom"){
+    wells <- paste0(
+      rep(LETTERS[initial_row:final_row], times = final_column-initial_column+1),
+
+      rep(initial_column:final_column, each = final_row-initial_row+1)
+    )
+  }
+  return(wells)
+}
 
 
 
